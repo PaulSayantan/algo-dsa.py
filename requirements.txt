@@ -1,0 +1,9 @@
+# Runtime dependency for the dsa toolkit.
+PyYAML>=6.0
+
+# Development / test tooling (install with: pip install -r requirements-dev.txt
+# or `pip install -e .[dev]`). Listed here for convenience.
+# pytest>=7.0
+# hypothesis>=6.0
+# ruff>=0.4
+# black>=24.0

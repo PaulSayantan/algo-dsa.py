@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "algo-dsa"
+version = "0.1.0"
+description = "DSA practice workspace: run, grade, and self-verify problems."
+requires-python = ">=3.10"
+dependencies = [
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "hypothesis>=6.0",
+    "ruff>=0.4",
+    "black>=24.0",
+]
+
+[project.scripts]
+dsa = "dsa.cli:main"
+
+[tool.setuptools]
+packages = ["dsa", "dsa.parsing"]
+
+[tool.setuptools.package-data]
+"dsa.data" = ["*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "category: problem category (arrays/strings/matrix/paradigms)",
+    "difficulty: normalized difficulty (easy/medium/hard)",
+    "algo: algorithm slug",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+# The generated solution.py stubs and SOLUTION.md snippets are learner content,
+# not part of the toolkit; lint only the toolkit package and its tests.
+extend-exclude = ["problems"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+extend-exclude = "problems"
