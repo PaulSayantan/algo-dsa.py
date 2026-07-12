@@ -41,7 +41,18 @@ def grade_namespace(
             # Ran without error; we cannot check the value.
             result.results.append(CaseResult(case, "skip", actual=actual, detail="non-deterministic"))
             continue
-        if cmp(actual, case.expected):
+        # The comparison must be guarded too: a returned object with a raising __eq__
+        # (a common accidental learner bug, e.g. a __eq__ assuming `other` is the same
+        # type) would otherwise propagate out of grade_namespace, aborting every
+        # remaining case and crashing the CLI instead of failing just this one case.
+        try:
+            matched = cmp(actual, case.expected)
+        except Exception as e:  # noqa: BLE001
+            result.results.append(
+                CaseResult(case, "error", actual=actual, detail=f"compare {type(e).__name__}: {e}")
+            )
+            continue
+        if matched:
             result.results.append(CaseResult(case, "pass", actual=actual))
         else:
             result.results.append(
@@ -92,7 +103,13 @@ def grade_source(
 def _worker(source: str, problem_id: str, preamble: str, unordered: bool, q: "mp.Queue") -> None:
     try:
         res = grade_source(source, problem_id, preamble=preamble, unordered=unordered)
-        # ProblemResult contains only picklable primitives.
+        # ``CaseResult.actual`` holds the learner's raw return value, which may be an
+        # exec-defined object that cannot be pickled across the spawn boundary. No
+        # consumer reads ``actual`` (failure ``detail`` already embeds its repr), so
+        # drop it before ``q.put`` — otherwise an unpicklable value would fail in the
+        # feeder thread and the parent would misreport a graded result as lost.
+        for cr in res.results:
+            cr.actual = None
         q.put(res)
     except Exception as e:  # noqa: BLE001
         q.put(ProblemResult(problem_id=problem_id, load_error=f"worker: {e}"))

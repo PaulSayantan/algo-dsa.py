@@ -14,9 +14,14 @@ import pytest
 
 from dsa.discovery import find_problems, iter_problems, workspace_root
 from dsa.grader import grade_source
-from dsa.parsing import solution_md
+from dsa.parsing import problem_md, solution_md
 from dsa.parsing.literals import equal, equal_unordered, try_parse_literal
-from dsa.parsing.solution_py import extract_cases, extract_cases_from_file, is_stub
+from dsa.parsing.solution_py import (
+    _collect_expected_comments,
+    extract_cases,
+    extract_cases_from_file,
+    is_stub,
+)
 
 ROOT = workspace_root()
 
@@ -51,10 +56,36 @@ def test_try_parse_literal_prose(text):
     assert not ok
 
 
+def test_try_parse_literal_non_valueerror_degrades_gracefully():
+    # ast.literal_eval raises TypeError (not ValueError/SyntaxError) on a
+    # structurally-valid-but-illegal literal like a dict with an unhashable key.
+    # It must degrade to "not a literal", never escape and abort case extraction.
+    ok, value = try_parse_literal("{[1]: 2}")
+    assert not ok and value is None
+
+
 def test_equal_float_tolerance():
     assert equal(4.0000001, 4.0)
     assert equal([1, 2.0000001], [1, 2])
     assert not equal(4.1, 4.0)
+
+
+def test_equal_rejects_numeric_string_vs_float():
+    # A float literal must not be reported equal to a numeric-looking string: the old
+    # code coerced float("5") == 5.0 and PASSed an incorrect solution. Genuine numeric
+    # comparisons (and the documented True == 1 behavior) must still hold.
+    assert not equal("5", 5.0)
+    assert not equal(["1", "2"], [1.0, 2.0])
+    assert equal(5, 5.0)
+    assert equal(True, 1.0)
+
+
+def test_equal_unordered_sound_under_float_tolerance():
+    # Greedy first-match is unsound once element equality uses isclose tolerance
+    # (non-transitive): a valid within-tolerance pairing exists here and must be found.
+    assert equal_unordered([1.0, 1.0000015], [1.0000008, 1.0])
+    # Still correctly rejects genuine mismatches / multiset differences.
+    assert not equal_unordered([1, 2, 2], [1, 2, 3])
 
 
 def test_equal_unordered():
@@ -151,6 +182,16 @@ def test_is_stub_false_for_implementation():
     assert not is_stub(src)
 
 
+def test_is_stub_only_notimplementederror_counts_as_stub():
+    # A body whose sole statement is `raise NotImplementedError` is an unimplemented
+    # stub; any other raise (e.g. an intentional guard) is a real implementation and
+    # must be graded, not silently skipped.
+    ni = 'def solve(x):\n    raise NotImplementedError\n\nif __name__ == "__main__":\n    print(solve(1))  # expected: 2\n'
+    other = 'def solve(x):\n    raise ValueError("bad input")\n\nif __name__ == "__main__":\n    print(solve(1))  # expected: 2\n'
+    assert is_stub(ni)
+    assert not is_stub(other)
+
+
 def test_is_stub_ignores_boilerplate_and_helpers():
     # A template with a filled-in ListNode data class and build/to_list harness
     # helpers but an empty entrypoint is still a stub (the invoked method is empty).
@@ -167,6 +208,34 @@ def test_full_corpus_solutions_are_all_stubs():
         p.id for p in iter_problems() if not is_stub(p.solution_py.read_text(encoding="utf-8"))
     ]
     assert non_stub == []
+
+
+# --- PROBLEM.md json-token normalization ------------------------------------
+
+
+def test_normalize_jsonish_preserves_tokens_inside_strings():
+    # Bare JSON tokens are normalized, but occurrences inside quoted string literals
+    # must be left intact (else a string-valued example is silently corrupted).
+    n = problem_md._normalize_jsonish
+    assert n("[null, 4, 5]") == "[None, 4, 5]"
+    assert n("true") == "True"
+    assert n('"true story"') == '"true story"'
+    assert n("'false'") == "'false'"
+
+
+# --- expected-comment scanning (ReDoS guard) --------------------------------
+
+
+def test_collect_expected_comments_no_catastrophic_backtracking():
+    # A long, colon-free "# expected" comment must not trigger quadratic regex
+    # backtracking that freezes the CLI. Parity: real markers still parse.
+    import time
+
+    src = "x = 1  # expected" + " " * 60000 + "no colon\n"
+    start = time.perf_counter()
+    _collect_expected_comments(src)
+    assert time.perf_counter() - start < 1.0  # was seconds-to-minutes before the fix
+    assert _collect_expected_comments("print(f(x))  # expected: 4\n") == {1: "4"}
 
 
 # --- reference extraction ---------------------------------------------------
@@ -242,6 +311,26 @@ def test_grade_wrong_solution_fails():
     assert not result.ok and result.failed == 2
 
 
+def test_grade_raising_eq_is_per_case_error_not_crash():
+    # A returned object whose __eq__ raises when compared to the expected literal must
+    # become a per-case "error", not propagate out of grade_namespace and crash the run
+    # (aborting every remaining case).
+    src = (
+        "class Bad:\n"
+        "    def __eq__(self, other):\n"
+        "        raise RuntimeError('boom')\n"
+        "def f(flag):\n"
+        "    return Bad() if flag else 1\n\n\n"
+        'if __name__ == "__main__":\n'
+        "    print(f(True))   # expected: [1, 3]\n"
+        "    print(f(False))  # expected: 1\n"
+    )
+    result = grade_source(src, "raising-eq")
+    assert result.load_error is None
+    statuses = [r.status for r in result.results]
+    assert statuses == ["error", "pass"]  # first case errors cleanly; second still runs
+
+
 def test_stub_solution_all_skipped():
     stub = (_p("arrays/beginner/binary-search/problem-01-binary-search") / "solution.py").read_text()
     result = grade_source(stub, "bs-stub")
@@ -254,11 +343,32 @@ def test_stub_solution_all_skipped():
 
 def test_discovery_counts():
     problems = list(iter_problems())
-    assert len(problems) == 884
+    # The corpus grows as new technique folders are added (arrays/strings/matrix +
+    # the stacks/queues/deques and hashing expansions), so assert a floor rather than
+    # a brittle exact count. Every discovered problem must carry a known category.
+    assert len(problems) >= 1380
     cats = {p.category for p in problems}
-    assert cats == {"arrays", "strings", "matrix", "paradigms"}
+    assert cats <= {"arrays", "strings", "matrix", "paradigms", "stacks", "queues", "deques", "hashing"}
+    assert {"arrays", "strings", "matrix", "paradigms", "hashing"} <= cats
 
 
 def test_find_by_algorithm():
     probs = find_problems(algorithm="binary-search", category="arrays")
     assert probs and all(p.algorithm == "binary-search" for p in probs)
+
+
+def test_iter_problems_skips_shallow_solution_without_crashing(tmp_path, capsys):
+    # A solution.py directly under problems/ has no category segment. iter_problems
+    # must skip it with a warning rather than crashing the whole command with
+    # IndexError (which would take down all problems, not just the offender).
+    root = tmp_path
+    (root / "problems").mkdir()
+    (root / "problems" / "solution.py").write_text("x = 1\n", encoding="utf-8")
+    good = root / "problems" / "arrays" / "beginner" / "algo" / "problem-01-x"
+    good.mkdir(parents=True)
+    (good / "solution.py").write_text("y = 1\n", encoding="utf-8")
+
+    problems = list(iter_problems(root))  # must not raise
+    ids = [p.id for p in problems]
+    assert "arrays/beginner/algo/problem-01-x" in ids
+    assert "warning" in capsys.readouterr().err.lower()

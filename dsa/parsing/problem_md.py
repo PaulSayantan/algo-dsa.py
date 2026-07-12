@@ -61,13 +61,29 @@ class ProblemDoc:
     has_examples_section: bool = False
 
 
+_JSONISH_TOKENS = {"null": "None", "true": "True", "false": "False"}
+# Match a whole quoted string (single/double, honoring backslash escapes) OR a bare
+# JSON keyword. Alternating quoted-string-first means the keyword branch can only fire
+# *outside* string literals.
+_JSONISH_RE = re.compile(
+    r"""("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|\b(null|true|false)\b"""
+)
+
+
 def _normalize_jsonish(text: str) -> str:
-    """Turn JSON tokens into Python literals for ``ast.literal_eval``."""
-    # Whole-word replacements only.
-    text = re.sub(r"\bnull\b", "None", text)
-    text = re.sub(r"\btrue\b", "True", text)
-    text = re.sub(r"\bfalse\b", "False", text)
-    return text
+    """Turn JSON tokens into Python literals for ``ast.literal_eval``.
+
+    Only bare ``null``/``true``/``false`` tokens are rewritten; occurrences *inside*
+    quoted string literals are left intact (e.g. the value ``"true story"`` must not
+    become ``"True story"``), so a string-valued example is not silently corrupted.
+    """
+
+    def _repl(m):
+        if m.group(1) is not None:  # a quoted string span -> preserve verbatim
+            return m.group(1)
+        return _JSONISH_TOKENS[m.group(2).lower()]
+
+    return _JSONISH_RE.sub(_repl, text)
 
 
 def _literal(text: str) -> Tuple[bool, Any]:

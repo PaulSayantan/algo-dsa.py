@@ -12,17 +12,18 @@ pip install -e ".[dev]"     # + pytest, hypothesis, ruff, black
 ```
 
 Everything except the optional static-site/PBT extras runs on the Python
-standard library (works on Python 3.10+).
+standard library (works on Python 3.9+).
 
 ## Use it
 
 ```bash
-# Solve a problem, then grade your solution.py against its # expected: oracle:
-dsa test problems/arrays/beginner/binary-search/problem-01-binary-search
-dsa test --algo two-pointers-opposite-ends        # a whole algorithm
-dsa test --category arrays --difficulty beginner  # a whole tier
+# Solve a problem, then submit: grade solution.py against its # expected: oracle,
+# and — only when every case passes — stage & commit that one solution.py.
+dsa submit problems/arrays/beginner/binary-search/problem-01-binary-search
+dsa submit -k binary-search                         # by id substring (must match one)
 
-# Or use pytest directly — one test per example case (stubs report as skips):
+# Or use pytest directly for a no-commit dry run — one test per example case
+# (stubs report as skips):
 pytest problems/arrays/beginner/binary-search
 pytest -k two-pointers
 
@@ -31,10 +32,48 @@ dsa next --category strings          # next unsolved problem
 dsa random --difficulty intermediate
 dsa show  <path>                     # print a PROBLEM.md
 
+# Spaced revision:
+dsa revisit -k binary-search      # mark a problem for revision + reset its solution.py
+dsa revise arrays                    # print a random problem to re-solve from that category
+
 # Corpus stats and self-verification:
 dsa stats
 dsa verify --json build/verification_report.json
 ```
+
+## `dsa submit` — grade, then commit on green
+
+`dsa submit <target>` resolves to **exactly one** problem (an ambiguous filter is
+an error), grades its `solution.py`, and:
+
+- **all cases pass** → stages and commits *only* that `solution.py`, with a
+  message stamped with the submission date/time.
+- **still a template** → refuses (a stub's cases only "pass" by being skipped).
+- **implemented but every case is non-deterministic** → refuses (0 cases could
+  be verified); pass `--allow-unverified` to commit it anyway, with an honest
+  "unverified" commit message.
+- **fails** → records the attempt. After **2** failed submits the problem is
+  automatically added to the revision set and its `solution.py` is reset to the
+  pristine template — nothing is committed. Marking resets the two-strike
+  counter, so a freshly-reset problem gets a full new grace window.
+
+A path/id target may point at the problem directory *or* its `solution.py`. A
+target that matches several problems is an error (submit is a single-file commit).
+
+## `dsa revise` / `dsa revisit` — spaced repetition
+
+Revision state lives in `.dsa/revision.json` (git-ignored): a map of problem id →
+`{added_at, reason, attempts}`.
+
+- `dsa revisit <target>` marks one problem for revision and resets its
+  `solution.py` back to the template so you can re-solve it from scratch.
+- `dsa revise <category>` (`arrays`|`strings`|`matrix`|`paradigms`) prints a
+  random problem currently marked for revision in that category; you then start
+  the revision manually (e.g. `dsa show <path>`).
+
+Resetting a `solution.py` restores the blob from the commit that first added it —
+which in this corpus is the unimplemented template — so provided helper classes
+and the `# expected:` oracle are preserved while your solution is discarded.
 
 ## How grading works
 

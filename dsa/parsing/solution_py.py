@@ -36,8 +36,14 @@ from .literals import try_parse_literal
 # forms like "# expected (any order): X" (case-insensitive). The parenthetical
 # qualifier is captured separately so callers can loosen comparison (e.g. order-
 # insensitive) for that case.
+# The trailing ``\s*`` before the parenthetical was folded *into* the optional
+# group so only one ``\s*`` sits adjacent to the required ``:``. The previous form
+# had two ambiguous whitespace runs (``\s*(?:\(...\))?\s*``) around the colon, which
+# let the engine backtrack quadratically (O(n^2)) on a ``# expected`` comment with a
+# long whitespace run and no colon — freezing the CLI. Callers additionally
+# short-circuit via a cheap ``":" in`` check (see :func:`_collect_expected_comments`).
 _EXPECTED_RE = re.compile(
-    r"#\s*expected(?:\s+output)?\s*(?:\(([^)]*)\))?\s*:\s*(.*)$",
+    r"#\s*expected(?:\s+output)?\s*(?:\(([^)]*)\)\s*)?:\s*(.*)$",
     re.IGNORECASE,
 )
 
@@ -62,6 +68,11 @@ def _collect_expected_comments(source: str) -> Dict[int, str]:
         tokens = tokenize.generate_tokens(io.StringIO(source).readline)
         for tok in tokens:
             if tok.type == tokenize.COMMENT:
+                # An expected-marker always contains a colon; skipping colon-free
+                # comments avoids running the regex on the exact input that could
+                # trigger catastrophic backtracking (see _EXPECTED_RE).
+                if ":" not in tok.string:
+                    continue
                 m = _EXPECTED_RE.search(tok.string)
                 if m:
                     qualifier = (m.group(1) or "").strip()
@@ -275,10 +286,24 @@ def _body_is_empty(fn: ast.AST) -> bool:
             continue
         if isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant) and s.value.value is ...:
             continue
-        if isinstance(s, ast.Raise):
+        # Only ``raise NotImplementedError`` counts as "unimplemented" (per the
+        # docstring). A body whose sole statement is any *other* raise (e.g.
+        # ``raise ValueError(...)``) is a real implementation — treating it as a stub
+        # would silently skip its cases instead of grading them.
+        if isinstance(s, ast.Raise) and _raises_not_implemented(s):
             continue
         return False
     return True
+
+
+def _raises_not_implemented(node: ast.Raise) -> bool:
+    """True if ``node`` raises ``NotImplementedError`` (bare name or call)."""
+    exc = node.exc
+    if isinstance(exc, ast.Name):
+        return exc.id == "NotImplementedError"
+    if isinstance(exc, ast.Call) and isinstance(exc.func, ast.Name):
+        return exc.func.id == "NotImplementedError"
+    return False
 
 
 def is_stub(source: str) -> bool:

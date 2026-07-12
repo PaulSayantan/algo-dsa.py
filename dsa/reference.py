@@ -28,7 +28,7 @@ from .model import Problem
 from .parsing import problem_md
 from .parsing.literals import equal, equal_unordered_deep
 from .parsing.solution_md import extract_reference
-from .parsing.solution_py import extract_cases
+from .parsing.solution_py import MainBlockNotFound, extract_cases
 
 
 @dataclass
@@ -127,8 +127,14 @@ def _check_expected_against_problem(problem: Problem) -> str:
     try:
         cases = [c for c in extract_cases(problem.solution_py.read_text(encoding="utf-8")) if c.deterministic]
         doc = problem_md.parse_file(problem.problem_md)
-    except Exception as e:  # noqa: BLE001
-        return f"n/a ({type(e).__name__})"
+    except MainBlockNotFound:
+        # No cases to align against — legitimately not applicable.
+        return "n/a"
+    except (OSError, UnicodeDecodeError, SyntaxError) as e:
+        # A genuine read/parse failure (unreadable or non-UTF-8 PROBLEM.md, broken
+        # solution.py). Use a distinct "error" marker so it stands out rather than
+        # blending into the benign "n/a" (= nothing comparable).
+        return f"error ({type(e).__name__}: {e})"
 
     fx = [e for e in doc.function_examples if e.output_parsed]
     if not fx or not cases:
@@ -198,7 +204,14 @@ def verify_problem_safe(problem: Problem, timeout: float = 10.0) -> VerifyResult
         return VerifyResult(problem.id, "load_error", detail="no result from worker")
 
 
-def verify_all(problems, timeout: float = 10.0, safe: bool = False):
-    """Yield a :class:`VerifyResult` per problem (optionally subprocess-isolated)."""
+def verify_all(problems, timeout: float = 10.0, safe: bool = True):
+    """Yield a :class:`VerifyResult` per problem.
+
+    ``safe`` defaults to True so each problem runs in a subprocess with a wall-clock
+    timeout: a single pathological reference (infinite loop, runaway recursion,
+    blocking I/O) is killed and reported as ``timeout`` instead of wedging the entire
+    corpus scan in-process. Pass ``safe=False`` for a faster in-process run when the
+    references are known-terminating.
+    """
     for problem in problems:
         yield verify_problem_safe(problem, timeout) if safe else verify_problem(problem)
