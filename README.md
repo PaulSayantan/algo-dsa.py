@@ -2,9 +2,9 @@
 
 > "Big O? More like Big Oof." — every dev at 2am
 
-Welcome, brave leetcode-r. You have entered a **no-cap, fully-loaded, 168-algorithm-deep** workspace built for one purpose only: turning you from "I forgot what a stack is" to "I explained a segment tree to my cat and she got it." 🐱📈
+Welcome, brave leetcode-r. You have entered a **no-cap, fully-loaded, 302-algorithm-deep** workspace built for one purpose only: turning you from "I forgot what a stack is" (rip, no pun intended) to "I explained a segment tree to my cat and she got it." 🐱📈
 
-This repo is basically the gym, except instead of protein shakes you're drinking **time complexity** and instead of gains you get **that sweet, sweet green LeetCode streak**. 🔥
+This repo is basically the gym, except instead of protein shakes you're drinking **time complexity** and instead of gains you get **that sweet, sweet green LeetCode streak**. 🔥 We just went through a whole glow-up arc too — stacks, queues, deques, and hashing rolled in and the whole thing got 134 algorithms thicker. Bigger workspace, same unhinged energy.
 
 ## 📁 vibe check: how this workspace is organized
 
@@ -20,8 +20,8 @@ Every algorithm lives under `problems/<category>/<difficulty>/<algorithm>/` — 
 
 ## 📊 the numbers don't lie
 
-- **168** algorithms & techniques covered (yes, we counted, yes, we're tired)
-- **884** practice problems (statement + empty template + solution guide, fully loaded)
+- **302** algorithms & techniques covered (yes, we counted, yes, we're tired, yes we added more)
+- **1380** practice problems (statement + empty template + solution guide, fully loaded)
 - **3** study-only deep dives for the theory sickos
 
 > "It's giving comprehensive." — this README, about itself
@@ -31,6 +31,10 @@ Every algorithm lives under `problems/<category>/<difficulty>/<algorithm>/` — 
 - [Arrays](#-arrays-the-og-data-structure)
 - [Strings](#-strings-text-but-make-it-algorithmic)
 - [Matrix (2D Arrays)](#-matrix-2d-arrays-arrays-but-they-had-a-baby)
+- [Stacks](#-stacks-lifo-but-make-it-fashion)
+- [Queues](#-queues-fifo-the-only-fair-line-in-life)
+- [Deques](#-deques-queues-that-swing-both-ways)
+- [Hashing](#-hashing-trust-me-bro-the-data-structure)
 - [Cross-Cutting Paradigms](#-cross-cutting-paradigms-the-thinking-patterns)
 
 ---
@@ -240,6 +244,224 @@ Every algorithm lives under `problems/<category>/<difficulty>/<algorithm>/` — 
 | **Max-Flow / Min-Cut on Grid** | Practice | 5 | [open](problems/matrix/advanced/max-flow-min-cut-on-grid/README.md) |
 | **Rotating Calipers on Point Grids** | Practice | 5 | [open](problems/matrix/advanced/rotating-calipers-on-point-grids/README.md) |
 | **Convolution / FFT on 2D data** | Practice | 5 | [open](problems/matrix/advanced/convolution-fft-on-2d-data/README.md) |
+
+---
+
+## 📚 Stacks (LIFO but make it fashion)
+
+> "Last in, first out — the algorithm equivalent of always eating the top cookie off the plate." 🍪
+
+### 🐣 Beginner — "push, pop, repeat"
+
+| Algorithm | Type | Problems | Link |
+|---|---|---|---|
+| **Array-Based Stack** | Practice | 5 | [open](problems/stacks/beginner/array-based-stack/README.md) |
+| **Balanced Parentheses / Bracket Matching** | Practice | 5 | [open](problems/stacks/beginner/balanced-parentheses-bracket-matching/README.md) |
+| **Base Conversion via Stack** | Practice | 5 | [open](problems/stacks/beginner/base-conversion-stack/README.md) |
+| **Delete Adjacent Duplicates** | Practice | 5 | [open](problems/stacks/beginner/delete-adjacent-duplicates/README.md) |
+| **Linked-List-Based Stack** | Practice | 5 | [open](problems/stacks/beginner/linked-list-based-stack/README.md) |
+| **Next Greater Element (Introductory)** | Practice | 5 | [open](problems/stacks/beginner/next-greater-element-intro/README.md) |
+| **Postfix (Reverse Polish Notation) Evaluation** | Practice | 5 | [open](problems/stacks/beginner/postfix-rpn-evaluation/README.md) |
+| **Prefix (Polish Notation) Evaluation** | Practice | 5 | [open](problems/stacks/beginner/prefix-polish-evaluation/README.md) |
+| **Reverse via Stack** | Practice | 5 | [open](problems/stacks/beginner/reverse-via-stack/README.md) |
+| **Undo / Redo Stacks** | Practice | 5 | [open](problems/stacks/beginner/undo-redo-stacks/README.md) |
+
+### 🎓 Intermediate — "the histogram arc"
+
+| Algorithm | Type | Problems | Link |
+|---|---|---|---|
+| **Asteroid Collision** | Practice | 5 | [open](problems/stacks/intermediate/asteroid-collision/README.md) |
+| **Basic Calculator** | Practice | 5 | [open](problems/stacks/intermediate/basic-calculator/README.md) |
+| **Decode String (Nested)** | Practice | 5 | [open](problems/stacks/intermediate/decode-string-nested/README.md) |
+| **Expression Tree Construction** | Practice | 5 | [open](problems/stacks/intermediate/expression-tree-construction/README.md) |
+| **Iterative Tree Traversals** | Practice | 5 | [open](problems/stacks/intermediate/iterative-tree-traversals/README.md) |
+| **Largest Rectangle in Histogram** | Practice | 5 | [open](problems/stacks/intermediate/largest-rectangle-in-histogram/README.md) |
+| **Min / Max Stack (O(1))** | Practice | 5 | [open](problems/stacks/intermediate/min-max-stack-o1/README.md) |
+| **Monotonic Stack** | Practice | 5 | [open](problems/stacks/intermediate/monotonic-stack/README.md) |
+| **Queue Using Two Stacks** | Practice | 5 | [open](problems/stacks/intermediate/queue-using-two-stacks/README.md) |
+| **Remove K Digits / Smallest Result** | Practice | 5 | [open](problems/stacks/intermediate/remove-k-digits/README.md) |
+| **Shunting-Yard / Infix Conversion** | Practice | 5 | [open](problems/stacks/intermediate/shunting-yard-infix-conversion/README.md) |
+| **Simplify Unix Path** | Practice | 5 | [open](problems/stacks/intermediate/simplify-unix-path/README.md) |
+| **Sort a Stack** | Practice | 5 | [open](problems/stacks/intermediate/sort-a-stack/README.md) |
+| **Stack Using Two Queues** | Practice | 5 | [open](problems/stacks/intermediate/stack-using-two-queues/README.md) |
+| **Trapping Rain Water (Stack)** | Practice | 5 | [open](problems/stacks/intermediate/trapping-rain-water-stack/README.md) |
+| **Valid Parentheses Variations** | Practice | 5 | [open](problems/stacks/intermediate/valid-parentheses-variations/README.md) |
+
+### 💀 Advanced — "SCC sicko hours"
+
+| Algorithm | Type | Problems | Link |
+|---|---|---|---|
+| **132 Pattern Detection** | Practice | 1 | [open](problems/stacks/advanced/132-pattern/README.md) |
+| **All Nearest Smaller Values (ANSV)** | Practice | 1 | [open](problems/stacks/advanced/all-nearest-smaller-values/README.md) |
+| **Articulation Points & Bridges** | Practice | 2 | [open](problems/stacks/advanced/articulation-points-bridges/README.md) |
+| **Cartesian Tree Construction (O(n))** | Practice | 1 | [open](problems/stacks/advanced/cartesian-tree-construction/README.md) |
+| **Full Expression Evaluator (precedence + unary)** | Practice | 1 | [open](problems/stacks/advanced/expression-evaluator-precedence-unary/README.md) |
+| **Gabow's SCC (Two Stacks)** | Practice | 1 | [open](problems/stacks/advanced/gabow-scc/README.md) |
+| **Maximal Rectangle in Binary Matrix** | Practice | 1 | [open](problems/stacks/advanced/maximal-rectangle-binary-matrix/README.md) |
+| **Min-Stack Aggregate Generalization** | Practice | 1 | [open](problems/stacks/advanced/min-stack-aggregate-generalization/README.md) |
+| **Persistent Stack** | Practice | 1 | [open](problems/stacks/advanced/persistent-stack/README.md) |
+| **Pratt Parsing / Operator-Precedence Parsing** | Practice | 1 | [open](problems/stacks/advanced/pratt-parsing/README.md) |
+| **Retroactive Stack** | Practice | 1 | [open](problems/stacks/advanced/retroactive-stack/README.md) |
+| **Stack-Sortable Permutations** | Practice | 2 | [open](problems/stacks/advanced/stack-sortable-permutations/README.md) |
+| **Sum of Subarray Minimums / Maximums** | Practice | 2 | [open](problems/stacks/advanced/sum-of-subarray-minimums-maximums/README.md) |
+| **Tarjan's Strongly Connected Components** | Practice | 1 | [open](problems/stacks/advanced/tarjan-scc/README.md) |
+
+---
+
+## 🎟️ Queues (FIFO, the only fair line in life)
+
+> "First come, first served — the one place in your life where cutting the line is a felony." 🚔
+
+### 🐣 Beginner — "wait your turn"
+
+| Algorithm | Type | Problems | Link |
+|---|---|---|---|
+| **Array-Based Queue** | Practice | 5 | [open](problems/queues/beginner/array-based-queue/README.md) |
+| **Circular Queue / Ring Buffer** | Practice | 5 | [open](problems/queues/beginner/circular-queue-ring-buffer/README.md) |
+| **FIFO Simulation** | Practice | 5 | [open](problems/queues/beginner/fifo-simulation/README.md) |
+| **Generate Binary Numbers** | Practice | 5 | [open](problems/queues/beginner/generate-binary-numbers/README.md) |
+| **Josephus Problem** | Practice | 5 | [open](problems/queues/beginner/josephus-problem/README.md) |
+| **Linked-List-Based Queue** | Practice | 5 | [open](problems/queues/beginner/linked-list-based-queue/README.md) |
+| **Reverse a Queue** | Practice | 5 | [open](problems/queues/beginner/reverse-a-queue/README.md) |
+
+### 🎓 Intermediate — "BFS enters the chat"
+
+| Algorithm | Type | Problems | Link |
+|---|---|---|---|
+| **Bidirectional BFS** | Practice | 5 | [open](problems/queues/intermediate/bidirectional-bfs/README.md) |
+| **Breadth-First Search (BFS)** | Practice | 5 | [open](problems/queues/intermediate/breadth-first-search/README.md) |
+| **Grid BFS / Lee Algorithm** | Practice | 5 | [open](problems/queues/intermediate/grid-bfs-lee-algorithm/README.md) |
+| **Kahn's Algorithm (Topological Sort)** | Practice | 5 | [open](problems/queues/intermediate/kahns-topological-sort/README.md) |
+| **Level-Order Traversal** | Practice | 5 | [open](problems/queues/intermediate/level-order-traversal/README.md) |
+| **Moving Average from Data Stream** | Practice | 5 | [open](problems/queues/intermediate/moving-average-data-stream/README.md) |
+| **Multi-Source BFS** | Practice | 5 | [open](problems/queues/intermediate/multi-source-bfs/README.md) |
+| **Recent Counter / Request Throttling** | Practice | 5 | [open](problems/queues/intermediate/recent-counter-throttling/README.md) |
+| **Round-Robin Scheduling** | Practice | 5 | [open](problems/queues/intermediate/round-robin-scheduling/README.md) |
+| **Snakes and Ladders / Board BFS** | Practice | 5 | [open](problems/queues/intermediate/snakes-and-ladders-board-bfs/README.md) |
+| **Task Scheduler / Cooldown** | Practice | 5 | [open](problems/queues/intermediate/task-scheduler-cooldown/README.md) |
+| **Word Ladder / State-Space BFS** | Practice | 5 | [open](problems/queues/intermediate/word-ladder-state-space-bfs/README.md) |
+
+### 💀 Advanced — "max-flow, minimal chill"
+
+| Algorithm | Type | Problems | Link |
+|---|---|---|---|
+| **Aho–Corasick Failure-Link BFS Build** | Practice | 1 | [open](problems/queues/advanced/aho-corasick-failure-link-bfs/README.md) |
+| **Calendar / Event-Queue Simulation** | Practice | 1 | [open](problems/queues/advanced/calendar-event-queue-simulation/README.md) |
+| **Dial's Algorithm (Bucket Queue)** | Practice | 1 | [open](problems/queues/advanced/dials-algorithm-bucket-queue/README.md) |
+| **Dijkstra (Priority Queue)** | Practice | 2 | [open](problems/queues/advanced/dijkstra-priority-queue/README.md) |
+| **Dinic's Algorithm** | Practice | 1 | [open](problems/queues/advanced/dinics-algorithm/README.md) |
+| **Edmonds–Karp (Max-Flow)** | Practice | 1 | [open](problems/queues/advanced/edmonds-karp-max-flow/README.md) |
+| **Hopcroft–Karp (Bipartite Matching)** | Practice | 1 | [open](problems/queues/advanced/hopcroft-karp-bipartite-matching/README.md) |
+| **Indexed / Addressable Priority Queue** | Practice | 1 | [open](problems/queues/advanced/indexed-addressable-priority-queue/README.md) |
+| **Monotonic-Queue DP Optimization** | Practice | 1 | [open](problems/queues/advanced/monotonic-queue-dp-optimization/README.md) |
+| **Monotonic Queue (Min / Max)** | Practice | 2 | [open](problems/queues/advanced/monotonic-queue-min-max/README.md) |
+| **Push–Relabel (FIFO)** | Practice | 1 | [open](problems/queues/advanced/push-relabel-fifo/README.md) |
+| **Top-K / K-Way Merge** | Practice | 2 | [open](problems/queues/advanced/top-k-k-way-merge/README.md) |
+| **Two-Heap Streaming Median** | Practice | 1 | [open](problems/queues/advanced/two-heap-streaming-median/README.md) |
+| **0-1 BFS** | Practice | 1 | [open](problems/queues/advanced/zero-one-bfs/README.md) |
+
+---
+
+## 🔄 Deques (queues that swing both ways)
+
+> "Push front, push back, pop wherever — deques don't do commitment." 🎭
+
+### 🐣 Beginner — "double-ended and thriving"
+
+| Algorithm | Type | Problems | Link |
+|---|---|---|---|
+| **Circular-Array Deque** | Practice | 5 | [open](problems/deques/beginner/circular-array-deque/README.md) |
+| **Deque as Stack or Queue** | Practice | 5 | [open](problems/deques/beginner/deque-as-stack-or-queue/README.md) |
+| **Design Front Middle Back Queue** | Practice | 5 | [open](problems/deques/beginner/design-front-middle-back-queue/README.md) |
+| **Doubly-Linked-List Deque** | Practice | 5 | [open](problems/deques/beginner/doubly-linked-list-deque/README.md) |
+| **Palindrome Check via Deque** | Practice | 5 | [open](problems/deques/beginner/palindrome-check-deque/README.md) |
+
+### 🎓 Intermediate — "sliding window's favorite sidekick"
+
+| Algorithm | Type | Problems | Link |
+|---|---|---|---|
+| **First Unique / Non-Repeating in a Stream** | Practice | 5 | [open](problems/deques/intermediate/first-unique-in-stream/README.md) |
+| **Monotonic Deque — Sliding Window Max/Min** | Practice | 5 | [open](problems/deques/intermediate/monotonic-deque-sliding-window/README.md) |
+| **Sliding-Window Aggregate with Two Monotonic Deques** | Practice | 5 | [open](problems/deques/intermediate/sliding-window-aggregate/README.md) |
+| **Sliding-Window Metrics (Range with Two Deques)** | Practice | 5 | [open](problems/deques/intermediate/sliding-window-metrics/README.md) |
+| **0-1 BFS with a Deque** | Practice | 5 | [open](problems/deques/intermediate/zero-one-bfs-deque/README.md) |
+
+### 💀 Advanced — "persistent, functional, unbothered"
+
+| Algorithm | Type | Problems | Link |
+|---|---|---|---|
+| **Constrained Subsequence Sum** | Practice | 1 | [open](problems/deques/advanced/constrained-subsequence-sum/README.md) |
+| **Double-Ended Priority Queue (Min-Max Heap)** | Practice | 1 | [open](problems/deques/advanced/double-ended-priority-queue/README.md) |
+| **Functional Deque (Steque)** | Practice | 1 | [open](problems/deques/advanced/functional-deque-steque/README.md) |
+| **Jump Game VI** | Practice | 1 | [open](problems/deques/advanced/jump-game-vi/README.md) |
+| **Monotonic-Deque DP (General)** | Practice | 1 | [open](problems/deques/advanced/monotonic-deque-dp-general/README.md) |
+| **Persistent Deque** | Practice | 1 | [open](problems/deques/advanced/persistent-deque/README.md) |
+| **Shortest Subarray with Sum ≥ K** | Practice | 1 | [open](problems/deques/advanced/shortest-subarray-sum-at-least-k/README.md) |
+| **Sliding-Window Median** | Practice | 1 | [open](problems/deques/advanced/sliding-window-median/README.md) |
+
+---
+
+## 🗝️ Hashing (trust me bro, the data structure)
+
+> "O(1) lookup, if the hash gods are feeling generous." 🎰
+
+### 🐣 Beginner — "the map is the territory"
+
+| Algorithm | Type | Problems | Link |
+|---|---|---|---|
+| **Bijection Mapping (Isomorphic / Pattern)** | Practice | 5 | [open](problems/hashing/beginner/bijection-mapping/README.md) |
+| **Complement Lookup / Two Sum** | Practice | 6 | [open](problems/hashing/beginner/complement-lookup-two-sum/README.md) |
+| **Duplicate Detection** | Practice | 6 | [open](problems/hashing/beginner/duplicate-detection/README.md) |
+| **First-Seen / Last-Seen Index** | Practice | 6 | [open](problems/hashing/beginner/first-last-seen-index/README.md) |
+| **Frequency Map (Counting)** | Practice | 6 | [open](problems/hashing/beginner/frequency-map/README.md) |
+| **Frequency-of-Frequencies** | Practice | 5 | [open](problems/hashing/beginner/frequency-of-frequencies/README.md) |
+| **Group Anagrams / Canonical Signature** | Practice | 5 | [open](problems/hashing/beginner/group-anagrams-canonical/README.md) |
+| **Hash Set Membership Testing** | Practice | 6 | [open](problems/hashing/beginner/hash-set-membership/README.md) |
+| **Set Algebra (Union / Intersection / Difference)** | Practice | 5 | [open](problems/hashing/beginner/set-algebra/README.md) |
+| **Value-to-Index Mapping** | Practice | 6 | [open](problems/hashing/beginner/value-to-index-map/README.md) |
+
+### 🎓 Intermediate — "collision course"
+
+| Algorithm | Type | Problems | Link |
+|---|---|---|---|
+| **At Most / Exactly K Distinct** | Practice | 5 | [open](problems/hashing/intermediate/at-most-k-distinct/README.md) |
+| **Coordinate / Tuple Hashing** | Practice | 5 | [open](problems/hashing/intermediate/coordinate-tuple-hashing/README.md) |
+| **Design: Hash-Backed Structures** | Practice | 5 | [open](problems/hashing/intermediate/design-hash-structures/README.md) |
+| **Hash Maps for Graphs & Trees** | Practice | 5 | [open](problems/hashing/intermediate/hashmap-graph-tree/README.md) |
+| **Hash-Set Simulation & Cycle Detection** | Practice | 5 | [open](problems/hashing/intermediate/hashset-simulation/README.md) |
+| **Longest Consecutive Sequence** | Practice | 5 | [open](problems/hashing/intermediate/longest-consecutive-sequence/README.md) |
+| **Matrix / Grid Hashing** | Practice | 5 | [open](problems/hashing/intermediate/matrix-grid-hashing/README.md) |
+| **Minimum / Constrained Covering Window** | Practice | 5 | [open](problems/hashing/intermediate/minimum-window/README.md) |
+| **Pair / K-Sum Counting with Frequencies** | Practice | 5 | [open](problems/hashing/intermediate/pair-counting-frequencies/README.md) |
+| **Prefix Difference / Balance Hashing** | Practice | 5 | [open](problems/hashing/intermediate/prefix-balance-hashing/README.md) |
+| **Prefix Modulo Hashing** | Practice | 5 | [open](problems/hashing/intermediate/prefix-modulo-hashmap/README.md) |
+| **Prefix Sum Earliest-Index Map** | Practice | 5 | [open](problems/hashing/intermediate/prefix-sum-earliest-index/README.md) |
+| **Prefix Sum + Hash Map (Frequency)** | Practice | 5 | [open](problems/hashing/intermediate/prefix-sum-hashmap/README.md) |
+| **Prefix XOR + Hash Map** | Practice | 5 | [open](problems/hashing/intermediate/prefix-xor-hashmap/README.md) |
+| **Sliding Window + Frequency Map** | Practice | 5 | [open](problems/hashing/intermediate/sliding-window-frequency/README.md) |
+| **Design: Stateful Hash-Map Systems** | Practice | 5 | [open](problems/hashing/intermediate/stateful-design-maps/README.md) |
+
+### 💀 Advanced — "certified hash sicko territory"
+
+| Algorithm | Type | Problems | Link |
+|---|---|---|---|
+| **Bloom Filter** | Practice | 2 | [open](problems/hashing/advanced/bloom-filter/README.md) |
+| **Consistent Hashing (Ring)** | Practice | 2 | [open](problems/hashing/advanced/consistent-hashing/README.md) |
+| **Count-Min Sketch** | Practice | 2 | [open](problems/hashing/advanced/count-min-sketch/README.md) |
+| **Double Hashing (Anti-Collision)** | Practice | 3 | [open](problems/hashing/advanced/double-hashing-anti-collision/README.md) |
+| **HyperLogLog / Cardinality Estimation** | Practice | 2 | [open](problems/hashing/advanced/hyperloglog/README.md) |
+| **LFU Cache** | Practice | 2 | [open](problems/hashing/advanced/lfu-cache/README.md) |
+| **Longest Duplicate Substring (Binary Search + Rolling Hash)** | Practice | 3 | [open](problems/hashing/advanced/longest-duplicate-substring/README.md) |
+| **LRU Cache** | Practice | 2 | [open](problems/hashing/advanced/lru-cache/README.md) |
+| **MinHash & SimHash (Similarity)** | Practice | 3 | [open](problems/hashing/advanced/minhash-simhash/README.md) |
+| **Perfect Hashing (FKS / Minimal)** | Practice | 2 | [open](problems/hashing/advanced/perfect-hashing/README.md) |
+| **Polynomial Prefix Hashing (Substring Equality)** | Practice | 3 | [open](problems/hashing/advanced/polynomial-string-hashing/README.md) |
+| **Rabin-Karp Pattern Matching** | Practice | 3 | [open](problems/hashing/advanced/rabin-karp/README.md) |
+| **Rendezvous & Jump Consistent Hashing** | Practice | 3 | [open](problems/hashing/advanced/rendezvous-jump-hashing/README.md) |
+| **Subtree Serialization / Duplicate Subtrees** | Practice | 3 | [open](problems/hashing/advanced/subtree-serialization-hashing/README.md) |
+| **Tree Isomorphism / Canonical Hashing** | Practice | 3 | [open](problems/hashing/advanced/tree-isomorphism-hashing/README.md) |
+| **Visited-State Hashing (BFS/DFS State-Space)** | Practice | 3 | [open](problems/hashing/advanced/visited-state-search/README.md) |
+| **Zobrist Hashing (Board State)** | Practice | 2 | [open](problems/hashing/advanced/zobrist-hashing/README.md) |
 
 ---
 
