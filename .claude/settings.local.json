@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Workflow(deep-research)",
+      "WebFetch(domain:cp-algorithms.com)",
+      "WebFetch(domain:usaco.guide)",
+      "WebFetch(domain:duckduckgo.com)",
+      "WebFetch(domain:www.geeksforgeeks.org)",
+      "WebFetch(domain:hackernoon.com)",
+      "WebFetch(domain:www.google.com)",
+      "WebFetch(domain:www.designgurus.io)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:html.duckduckgo.com)",
+      "WebFetch(domain:www.techinterviewhandbook.org)",
+      "WebFetch(domain:codeforces.com)",
+      "WebFetch(domain:seanprashad.com)",
+      "Bash(curl -s -A \"Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/120.0 Safari/537.36\" -L \"https://codeforces.com/blog/entry/125707\")",
+      "Bash(python3 -c \"import sys,re,html; t=sys.stdin.read\\(\\); m=re.search\\(r'<div class=\\\\\"ttypography\\\\\">\\(.*?\\)</div>\\\\s*<div class=\\\\\"roundbox', t, re.S\\); body=m.group\\(1\\) if m else t; body=re.sub\\(r'<[^>]+>',' ',body\\); body=html.unescape\\(body\\); body=re.sub\\(r'\\\\s+',' ',body\\); print\\(body[:6000]\\)\")",
+      "WebFetch(domain:www.numberanalytics.com)",
+      "WebFetch(domain:leetcopilot.dev)",
+      "Bash(curl -s -A \"Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/120.0 Safari/537.36\" \"https://codeforces.com/blog/entry/144076\" -o /tmp/cf.html -w \"%{http_code}\\\\n\" --max-time 30)",
+      "Read(//tmp/**)",
+      "Bash(curl *)",
+      "Skill(deep-research)",
+      "WebFetch(domain:cses.fi)",
+      "WebFetch(domain:walkccc.me)",
+      "WebFetch(domain:leetcode.com)",
+      "WebFetch(domain:leetcode.ca)",
+      "WebFetch(domain:doocs.github.io)"
+    ]
+  }
+}
