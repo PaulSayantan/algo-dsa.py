@@ -12,10 +12,25 @@ from __future__ import annotations
 
 import ast
 import contextlib
-import io
 from typing import Any, Dict
 
 from .parsing.solution_md import PREAMBLE
+
+
+class _Discard:
+    """A write-only sink that drops everything (a null file object).
+
+    Used instead of ``io.StringIO`` so suppressed output is discarded immediately
+    rather than accumulated in memory: a solution that prints a large (or, combined
+    with a missing timeout, unbounded) volume must not grow an in-memory buffer that
+    is never read.
+    """
+
+    def write(self, s: str) -> int:
+        return len(s)
+
+    def flush(self) -> None:
+        pass
 
 
 @contextlib.contextmanager
@@ -25,8 +40,8 @@ def _silence():
     Some reference snippets and solutions print demo output at import time or on
     call; that noise must not leak into the runner's output or reports.
     """
-    devnull = io.StringIO()
-    with contextlib.redirect_stdout(devnull), contextlib.redirect_stderr(devnull):
+    sink = _Discard()
+    with contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
         yield
 
 

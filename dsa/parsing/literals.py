@@ -31,7 +31,13 @@ def try_parse_literal(text: str) -> Tuple[bool, Any]:
     for candidate in _candidate_prefixes(stripped):
         try:
             return True, ast.literal_eval(candidate)
-        except (ValueError, SyntaxError):
+        # ast.literal_eval raises ValueError/SyntaxError for malformed input, but also
+        # TypeError for structurally-valid-but-illegal literals (e.g. an unhashable
+        # dict key like "{[1]: 2}") and MemoryError/RecursionError on pathological
+        # nesting. Treat all of them uniformly as "not a literal" so a single bad
+        # comment degrades to a non-deterministic case rather than aborting the whole
+        # problem's case extraction upstream.
+        except (ValueError, SyntaxError, TypeError, MemoryError, RecursionError):
             continue
     return False, None
 
@@ -53,12 +59,16 @@ def equal(actual: Any, expected: Any, *, rel_tol: float = 1e-6, abs_tol: float =
     behavior since expected literals are canonical). Floats anywhere in a nested
     structure compare with :func:`math.isclose`.
     """
-    # Floats (including one-side-float comparisons like 5 vs 5.0).
+    # Floats (including one-side-float comparisons like 5 vs 5.0). Only take the
+    # tolerance branch when BOTH operands are genuinely numeric — otherwise a float()
+    # coercion of a numeric-looking string (e.g. equal("5", 5.0)) would report a true
+    # type mismatch as equal, silently PASSing an incorrect solution. bool is an int
+    # subclass, so True/1.0 still compares here, matching this function's documented
+    # "True == 1" behavior.
     if isinstance(actual, float) or isinstance(expected, float):
-        try:
-            return math.isclose(float(actual), float(expected), rel_tol=rel_tol, abs_tol=abs_tol)
-        except (TypeError, ValueError):
+        if not (isinstance(actual, (int, float)) and isinstance(expected, (int, float))):
             return False
+        return math.isclose(float(actual), float(expected), rel_tol=rel_tol, abs_tol=abs_tol)
 
     if isinstance(expected, (list, tuple)) and isinstance(actual, (list, tuple)):
         if len(actual) != len(expected):
@@ -75,20 +85,39 @@ def equal(actual: Any, expected: Any, *, rel_tol: float = 1e-6, abs_tol: float =
     return actual == expected
 
 
+def _perfect_matching(actual: Any, expected: Any, elem_equal) -> bool:
+    """True iff every ``expected`` element can be paired 1:1 with an ``actual`` one.
+
+    Greedy first-match is *unsound* here: element equality goes through
+    :func:`equal`'s ``math.isclose`` tolerance, which is not transitive, so a greedy
+    pairing can consume an actual element that another expected element uniquely
+    needed and wrongly report a mismatch (false FAIL) even though a valid perfect
+    matching exists. We instead compute a maximum bipartite matching via augmenting
+    paths (Kuhn's algorithm) and require it to cover every element.
+    """
+    n = len(expected)
+    adj = [[j for j, a in enumerate(actual) if elem_equal(a, e)] for e in expected]
+    match_a = [-1] * len(actual)  # actual index -> matched expected index, or -1
+
+    def _augment(i: int, seen: list) -> bool:
+        for j in adj[i]:
+            if not seen[j]:
+                seen[j] = True
+                if match_a[j] == -1 or _augment(match_a[j], seen):
+                    match_a[j] = i
+                    return True
+        return False
+
+    matched = sum(_augment(i, [False] * len(actual)) for i in range(n))
+    return matched == n
+
+
 def equal_unordered(actual: Any, expected: Any, **kw: Any) -> bool:
     """Order-insensitive comparison for top-level sequences (opt-in per problem)."""
     if isinstance(expected, (list, tuple)) and isinstance(actual, (list, tuple)):
         if len(actual) != len(expected):
             return False
-        remaining = list(actual)
-        for e in expected:
-            for i, a in enumerate(remaining):
-                if equal(a, e, **kw):
-                    del remaining[i]
-                    break
-            else:
-                return False
-        return True
+        return _perfect_matching(actual, expected, lambda a, e: equal(a, e, **kw))
     return equal(actual, expected, **kw)
 
 
@@ -96,19 +125,11 @@ def equal_unordered_deep(actual: Any, expected: Any, **kw: Any) -> bool:
     """Order-insensitive comparison applied recursively to nested sequences.
 
     Handles answers like Group Anagrams where both the outer grouping order and
-    each inner group's order are arbitrary. Matches elements greedily by deep
-    unordered equality.
+    each inner group's order are arbitrary. Matches elements by deep unordered
+    equality using a sound maximum bipartite matching (see :func:`_perfect_matching`).
     """
     if isinstance(expected, (list, tuple)) and isinstance(actual, (list, tuple)):
         if len(actual) != len(expected):
             return False
-        remaining = list(actual)
-        for e in expected:
-            for i, a in enumerate(remaining):
-                if equal_unordered_deep(a, e, **kw):
-                    del remaining[i]
-                    break
-            else:
-                return False
-        return True
+        return _perfect_matching(actual, expected, lambda a, e: equal_unordered_deep(a, e, **kw))
     return equal(actual, expected, **kw)

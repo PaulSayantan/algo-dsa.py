@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+import sys
 from pathlib import Path
 from typing import Iterator, List, Optional
 
@@ -25,10 +27,17 @@ def workspace_root(start: Optional[Path] = None) -> Path:
 def _problem_from_dir(root: Path, d: Path) -> Problem:
     rel = d.relative_to(root / "problems")
     parts = rel.parts  # e.g. ("arrays","beginner","linear-search","problem-01-...")
+    if not parts:
+        # A solution.py directly under problems/ (rel == ".") has no category segment;
+        # reject it so callers can skip rather than crash with IndexError.
+        raise ValueError(f"not a problem directory (no category segment): {d}")
     category = parts[0]
     if category == "paradigms":
         difficulty_tier = ""
-        algorithm = parts[1]
+        # paradigms/ nests one level shallower (no difficulty tier), but a solution.py
+        # sitting directly in problems/paradigms/ still has no algorithm segment; guard
+        # it the same way the else-branch already guards its deeper indices.
+        algorithm = parts[1] if len(parts) > 1 else ""
         slug = parts[-1]
     else:
         difficulty_tier = parts[1] if len(parts) > 1 else ""
@@ -45,11 +54,31 @@ def _problem_from_dir(root: Path, d: Path) -> Problem:
 
 
 def iter_problems(root: Optional[Path] = None) -> Iterator[Problem]:
-    """Yield every problem folder (one containing a ``solution.py``)."""
+    """Yield every problem folder (one containing a ``solution.py``).
+
+    Uses ``os.walk`` with an ``onerror`` callback (rather than ``Path.rglob``, which
+    silently swallows ``PermissionError``/``OSError``) so an unreadable subtree is
+    reported to stderr instead of quietly dropping problems — a full-corpus scan must
+    not print "Verified N" while some problems were never enumerated. A directory that
+    can't be parsed into a Problem is skipped with a warning rather than aborting the
+    whole walk.
+    """
     root = root or workspace_root()
     problems_dir = root / "problems"
-    for sol in sorted(problems_dir.rglob("solution.py")):
-        yield _problem_from_dir(root, sol.parent)
+
+    def _onerror(err: OSError) -> None:
+        print(f"warning: skipping unreadable path during discovery: {err}", file=sys.stderr)
+
+    found: List[Path] = []
+    # followlinks=False preserves the previous rglob behavior of not descending symlinks.
+    for dirpath, _dirs, files in os.walk(problems_dir, onerror=_onerror, followlinks=False):
+        if "solution.py" in files:
+            found.append(Path(dirpath))
+    for d in sorted(found):
+        try:
+            yield _problem_from_dir(root, d)
+        except ValueError as err:
+            print(f"warning: skipping malformed problem directory: {err}", file=sys.stderr)
 
 
 def find_problems(
@@ -81,10 +110,14 @@ def resolve(path_or_id: str, root: Optional[Path] = None) -> List[Problem]:
     p = Path(path_or_id)
     if p.exists():
         target = p.resolve()
+        # A path to a file (e.g. the solution.py itself) resolves to its problem
+        # directory, so `dsa submit .../problem-.../solution.py` works too.
+        if target.is_file():
+            target = target.parent
         # A specific problem dir, or a parent dir containing several.
         matches = []
         for prob in iter_problems(root):
-            if prob.path == target or target in prob.path.parents or prob.path == target:
+            if prob.path == target or target in prob.path.parents:
                 matches.append(prob)
         if matches:
             return matches
