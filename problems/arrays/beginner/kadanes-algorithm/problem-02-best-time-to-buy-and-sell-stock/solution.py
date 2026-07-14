@@ -16,8 +16,13 @@ class Solution:
             >>> Solution().maxProfit([7, 1, 5, 3, 6, 4])
             5
         """
-        # TODO: implement using Kadane's Algorithm on consecutive price differences
-        pass
+        minBuy = 99999
+        profit = 0
+        for price in prices:
+            minBuy = min(minBuy, price)
+            profit = max(profit, price - minBuy)
+
+        return profit
 
 
 if __name__ == "__main__":
