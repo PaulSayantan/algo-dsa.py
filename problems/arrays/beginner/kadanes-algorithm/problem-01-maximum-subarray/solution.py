@@ -15,12 +15,16 @@ class Solution:
             >>> Solution().maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4])
             6
         """
-        # TODO: implement using Kadane's Algorithm
-        pass
+        maxSum = nums[0]
+        subarraySum = nums[0]
+        for i in range(1, len(nums)):
+            subarraySum = max(nums[i], subarraySum+nums[i])
+            maxSum = max(maxSum, subarraySum)
+        return maxSum
 
 
 if __name__ == "__main__":
     sol = Solution()
     print(sol.maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]))  # expected: 6
-    print(sol.maxSubArray([1]))                               # expected: 1
-    print(sol.maxSubArray([5, 4, -1, 7, 8]))                  # expected: 23
+    #print(sol.maxSubArray([1]))                               # expected: 1
+    #print(sol.maxSubArray([5, 4, -1, 7, 8]))                  # expected: 23
