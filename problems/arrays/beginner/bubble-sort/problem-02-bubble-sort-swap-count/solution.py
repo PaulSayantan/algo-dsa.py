@@ -17,8 +17,14 @@ class Solution:
             >>> Solution().countSwaps([3, 2, 1])
             3
         """
-        # TODO: implement
-        pass
+        swaps = 0
+        for _ in range(len(arr)):
+            for j in range(len(arr) - 1):
+                if arr[j] > arr[j+1]:
+                    arr[j], arr[j+1] = arr[j+1], arr[j]
+                    swaps += 1
+        return swaps
+
 
 
 if __name__ == "__main__":
