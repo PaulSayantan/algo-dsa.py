@@ -20,8 +20,13 @@ class Solution:
             >>> Solution().sortPeople(["Mary", "John", "Emma"], [180, 165, 170])
             ['Mary', 'Emma', 'John']
         """
-        # TODO: implement
-        pass
+        for _ in range(len(heights)):
+            for i in range(len(heights) - 1):
+                # when we swap heights, also swap the names
+                if heights[i] < heights[i+1]:
+                    heights[i], heights[i+1] = heights[i+1], heights[i]
+                    names[i], names[i+1] = names[i+1], names[i]
+        return names
 
 
 if __name__ == "__main__":
