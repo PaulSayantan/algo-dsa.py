@@ -21,7 +21,20 @@ class Solution:
             1
         """
         # TODO: implement
-        pass
+        swaps = 0
+        for _ in range(len(arr)):
+            currSwaps = 0
+            for i in range(len(arr) - 1):
+                if arr[i] > arr[i + 1]:
+                    arr[i], arr[i+1] = arr[i+1], arr[i]
+                    currSwaps += 1
+            if currSwaps == 0:
+                swaps += 1
+                break
+            else:
+                swaps += 1
+
+        return swaps
 
 
 if __name__ == "__main__":
