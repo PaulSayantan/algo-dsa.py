@@ -19,8 +19,13 @@ class Solution:
             >>> Solution().minAdjacentSwaps([2, 8, 5, 3, 9, 4])
             6
         """
-        # TODO: implement
-        pass
+        swaps = 0
+        for _ in range(len(arr)):
+            for i in range(len(arr) - 1):
+                if arr[i] > arr[i+1]:
+                    swaps += 1
+                    arr[i], arr[i+1] = arr[i+1], arr[i]
+        return swaps
 
 
 if __name__ == "__main__":
